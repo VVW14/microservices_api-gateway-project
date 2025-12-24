@@ -1,126 +1,234 @@
-API Gateway (Backend for Frontend - BFF) - это микросервисная система, демонстрирующая архитектурный паттерн "Backend for Frontend". 
-Основная цель проекта - научиться проектировать промежуточный слой между фронтендом и микросервисами, который объединяет данные из нескольких источников в единый API с поддержкой кэширования, мониторинга и отказоустойчивости.
+# API Gateway (Backend for Frontend)
 
-Основные задачи проекта:
-Разработать API Gateway, который агрегирует данные из трёх микросервисов
+Данный проект демонстрирует архитектурный паттерн **Backend for Frontend (BFF)** и предназначен для учебных целей.
 
-Реализовать кэширование агрегированных данных с помощью Redis
+Основная задача — спроектировать и реализовать промежуточный слой между клиентскими приложениями и микросервисной системой, который агрегирует данные, предоставляет единый REST API, поддерживает кэширование, мониторинг и отказоустойчивость.
 
-Настроить систему мониторинга на основе Prometheus и Grafana
+---
 
-Обеспечить отказоустойчивость и graceful degradation
+## Цели проекта
 
-Предоставить единый REST API для клиентских приложений
+* Реализация API Gateway (BFF)
+* Агрегация данных из нескольких микросервисов
+* Реализация кэширования с использованием Redis
+* Настройка мониторинга на базе Prometheus и Grafana
+* Обеспечение отказоустойчивости и graceful degradation
+* Предоставление единого REST API для клиентских приложений
 
+---
 
-                   Клиент (Web/Mobile App)                  
+## Архитектура
 
-                              │ HTTP/REST
-                              ▼
-                    API Gateway (BFF)                        
-                    FastAPI • Python • Redis                 
-                     Порт: 8000                               
+```text
+ Клиент (Web / Mobile App)
+          │ HTTP / REST
+          ▼
+   API Gateway (BFF)
+   FastAPI • Python • Redis
+   Port: 8000
 
-  Функции:                                                  
-  • Агрегация данных из 3 микросервисов                     
-  • Кэширование (Redis, 30 сек)                             
-  • Мониторинг метрик (Prometheus)                          
-  • Health checks всех компонентов                          
-  • Fallback на in-memory кэш                               
+   Функции:
+   • Агрегация данных из 3 микросервисов
+   • Кэширование (Redis, TTL 30 сек)
+   • Экспорт метрик (Prometheus)
+   • Health checks всех компонентов
+   • Fallback на in-memory кэш
 
-               │               │                 │
-               ▼               ▼                 ▼
-         User Service     Order Service   Product Service
-         FastAPI          FastAPI         FastAPI       
-         Порт: 8001       Порт: 8002      Порт: 8003    
-    
+        │            │             │
+        ▼            ▼             ▼
+  User Service   Order Service  Product Service
+  FastAPI        FastAPI        FastAPI
+  Port: 8001     Port: 8002     Port: 8003
+```
 
- Технологический стек
-Backend:
-Python 3.11 - основной язык разработки
-FastAPI - современный асинхронный веб-фреймворк
-Uvicorn - ASGI-сервер для запуска FastAPI
-HTTPX - асинхронный HTTP-клиент
-Redis - система кэширования in-memory
-Prometheus Client - экспорт метрик
+---
 
-Контейнеризация и оркестрация:
-Docker - контейнеризация приложений
-Docker Compose - оркестрация многоконтейнерного приложения
+## Технологический стек
 
-Мониторинг и наблюдение:
-Prometheus - сбор метрик и мониторинг
-Grafana - визуализация метрик и дашборды
-Redis Exporter - экспорт метрик Redis
-Node Exporter - сбор системных метрик
+### Backend
 
-Для быстрого запуска есть скрипт chmod +x start_with_monitoring.sh
+* Python 3.11
+* FastAPI
+* Uvicorn
+* HTTPX
+* Redis
+* Prometheus Client
+
+### Контейнеризация и оркестрация
+
+* Docker
+* Docker Compose
+
+### Мониторинг и наблюдаемость
+
+* Prometheus
+* Grafana
+* Redis Exporter
+* Node Exporter
+
+---
+
+## Быстрый старт
+
+```bash
+chmod +x start_with_monitoring.sh
 ./start_with_monitoring.sh
+```
 
-Микросервисы
-Сервис	                         Endpoint	                                        Описание
-User Service	          http://localhost:8001/users/{id}	                Получить пользователя
-User Service	          http://localhost:8001/health	                    Health check
-Order Service	          http://localhost:8002/orders/user/{id}	          Заказы пользователя
-Order Service	          http://localhost:8002/health	                    Health check
-Product Service	        http://localhost:8003/products/{id}              	Получить товар
-Product Service	        http://localhost:8003/products/batch	            Получить несколько товаров (POST)
-Product Service	        http://localhost:8003/health	                    Health check
+После запуска доступны:
 
-Система мониторинга
-Доступ к компонентам мониторинга:
-Компонент	       	            URL	          		          Доступ	          		          Назначение
-Prometheus		          http://localhost:9090	          	Веб-интерфейс		              Сбор и запрос метрик
-Grafana		              http://localhost:3000	            admin / admin123		          Визуализация метрик
-API Gateway Metrics    	http://localhost:8000/metrics	    Текстовый формат		          Метрики API Gateway
-Redis Exporter	        http://localhost:9121/metrics	    Текстовый формат	            Метрики Redis
-Node Exporter	           http://localhost:9100/metrics	  Текстовый формат	            Системные метрики
+* API Gateway: [http://localhost:8000](http://localhost:8000)
+* Prometheus: [http://localhost:9090](http://localhost:9090)
+* Grafana: [http://localhost:3000](http://localhost:3000) (admin / admin123)
 
+---
+
+## Микросервисы и API
+
+### User Service (порт 8001)
+
+| Endpoint        | Описание               |
+| --------------- | ---------------------- |
+| GET /users/{id} | Получение пользователя |
+| GET /health     | Health check           |
+
+### Order Service (порт 8002)
+
+| Endpoint              | Описание            |
+| --------------------- | ------------------- |
+| GET /orders/user/{id} | Заказы пользователя |
+| GET /health           | Health check        |
+
+### Product Service (порт 8003)
+
+| Endpoint             | Описание                 |
+| -------------------- | ------------------------ |
+| GET /products/{id}   | Получение товара         |
+| POST /products/batch | Получение списка товаров |
+| GET /health          | Health check             |
+
+---
+
+## API Gateway
+
+### Агрегирующий endpoint
+
+```http
+GET /api/profile/{user_id}
+```
+
+Endpoint агрегирует:
+
+* данные пользователя
+* список заказов
+* данные товаров, связанных с заказами
+
+---
+
+## Кэширование
+
+* Redis используется для хранения агрегированных данных
+* TTL кэша — 30 секунд
+* При недоступности Redis используется in-memory кэш
 
 Собираемые метрики:
-1. HTTP метрики API Gateway:
-http_requests_total - общее количество HTTP запросов
-http_request_duration_seconds - гистограмма времени выполнения запросов
-http_active_requests - количество активных запросов
 
-2. Метрики кэширования:
-cache_hits_total - количество попаданий в кэш
-cache_misses_total - количество промахов кэша
-aggregation_duration_seconds - время агрегации данных
+* cache_hits_total
+* cache_misses_total
+* aggregation_duration_seconds
 
-3. Метрики ошибок:
-service_errors_total - количество ошибок по сервисам
+---
 
-4. Redis метрики:
-Использование памяти
-Количество подключений
-Hit/miss ratio
-Команды в секунду
+## Мониторинг
 
-5. Системные метрики:
-Использование CPU, памяти, диска
-Сетевая активность
-Количество процессов
+### Доступ к компонентам
 
+| Компонент           | URL                                                            | Назначение          |
+| ------------------- | -------------------------------------------------------------- | ------------------- |
+| Prometheus          | [http://localhost:9090](http://localhost:9090)                 | Сбор метрик         |
+| Grafana             | [http://localhost:3000](http://localhost:3000)                 | Визуализация метрик |
+| API Gateway Metrics | [http://localhost:8000/metrics](http://localhost:8000/metrics) | Метрики API Gateway |
+| Redis Exporter      | [http://localhost:9121/metrics](http://localhost:9121/metrics) | Метрики Redis       |
+| Node Exporter       | [http://localhost:9100/metrics](http://localhost:9100/metrics) | Системные метрики   |
 
-Соответствие требованиям задания
-REST API с агрегацией данных	        Endpoint /api/profile/{user_id} объединяет данные из 3 микросервисов
-Кэширование (Redis)	                  Redis кэширование с TTL 30 секунд, fallback на in-memory кэш
-Retry и fallback	                    Обработка ошибок при запросах, возврат частичных данных
-Микросервисная архитектура	          3 отдельных сервиса + API Gateway + Redis
-Контейнеризация                       Docker Compose для оркестрации всех сервисов
-Язык Python	                          Все сервисы реализованы на Python/FastAPI
-Мониторинг	                          Prometheus + Grafana + Node Exporter + Redis Exporter
-Логирование	                          Структурированное логирование в JSON формате
+---
 
+## Собираемые метрики
 
-Сценарий использования:
-Клиент запрашивает профиль пользователя через API Gateway
-API Gateway проверяет кэш Redis:
-Если данные в кэше (и не старше 30 сек) → возвращает из кэша
-Если нет в кэше → параллельно запрашивает данные из трёх микросервисов
-Микросервисы возвращают свои части данных
-API Gateway агрегирует данные, сохраняет в кэш, возвращает клиенту
-Prometheus собирает метрики со всех компонентов
-Grafana отображает метрики на дашбордах
+### HTTP метрики API Gateway
 
+* http_requests_total
+* http_request_duration_seconds
+* http_active_requests
+
+### Метрики кэширования
+
+* cache_hits_total
+* cache_misses_total
+
+### Метрики ошибок
+
+* service_errors_total
+
+### Redis метрики
+
+* Использование памяти
+* Количество подключений
+* Hit / Miss ratio
+* Команды в секунду
+
+### Системные метрики
+
+* CPU
+* Память
+* Диск
+* Сеть
+
+---
+
+## Отказоустойчивость
+
+* Параллельные запросы к микросервисам
+* Обработка ошибок отдельных сервисов
+* Возврат частичных данных при сбоях
+* Graceful degradation
+
+---
+
+## Логирование
+
+* Структурированное логирование
+* Формат JSON
+
+---
+
+## Соответствие требованиям
+
+| Требование                 | Реализация                 |
+| -------------------------- | -------------------------- |
+| REST API с агрегацией      | /api/profile/{user_id}     |
+| Кэширование                | Redis + in-memory fallback |
+| Retry и fallback           | Частичные ответы           |
+| Микросервисная архитектура | 3 сервиса + API Gateway    |
+| Контейнеризация            | Docker Compose             |
+| Язык программирования      | Python / FastAPI           |
+| Мониторинг                 | Prometheus + Grafana       |
+
+---
+
+## Сценарий использования
+
+1. Клиент отправляет запрос на API Gateway
+2. API Gateway проверяет наличие данных в Redis
+3. При отсутствии кэша выполняются параллельные запросы к микросервисам
+4. Полученные данные агрегируются
+5. Результат сохраняется в кэш
+6. Ответ возвращается клиенту
+7. Метрики собираются Prometheus
+8. Данные визуализируются в Grafana
+
+---
+
+## Примечание
+
+Проект выполнен в учебных целях для изучения микросервисной архитектуры, паттерна Backend for Frontend и инструментов мониторинга.
