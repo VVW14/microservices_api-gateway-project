@@ -29,11 +29,11 @@ echo ""
 curl -s http://localhost:8000/api/profile/user123 | python3 -c "
 import sys, json
 data = json.load(sys.stdin)
-print(f'👤 Пользователь: {data[\"user\"][\"full_name\"]}')
-print(f'📦 Заказов: {data[\"metadata\"][\"orders_count\"]} шт.')
-print(f'🛒 Товаров: {data[\"metadata\"][\"products_count\"]} шт.')
-print(f'💾 Из кэша: {data[\"metadata\"][\"cached\"]}')
-print(f'⏱  Агрегировано: {data[\"metadata\"][\"aggregated_at\"][11:19]}')
+print(f' Пользователь: {data[\"user\"][\"full_name\"]}')
+print(f' Заказов: {data[\"metadata\"][\"orders_count\"]} шт.')
+print(f' Товаров: {data[\"metadata\"][\"products_count\"]} шт.')
+print(f' Из кэша: {data[\"metadata\"][\"cached\"]}')
+print(f'  Агрегировано: {data[\"metadata\"][\"aggregated_at\"][11:19]}')
 "
 echo ""
 
@@ -42,7 +42,7 @@ echo ""
 curl -s http://localhost:8000/api/profile/user123 | python3 -c "
 import sys, json
 data = json.load(sys.stdin)
-print(f'💾 Из кэша: {data[\"metadata\"][\"cached\"]}')
+print(f' Из кэша: {data[\"metadata\"][\"cached\"]}')
 "
 echo ""
 
@@ -51,10 +51,10 @@ echo ""
 curl -s http://localhost:8000/metrics | python3 -c "
 import sys, json
 data = json.load(sys.stdin)
-print(f'📊 Всего запросов: {data[\"metrics\"][\"requests_total\"]}')
-print(f'✅ Попаданий в кэш: {data[\"metrics\"][\"cache_hits\"]}')
-print(f'❌ Промахов кэша: {data[\"metrics\"][\"cache_misses\"]}')
-print(f'📈 Эффективность кэша: {data[\"performance\"][\"cache_hit_rate\"]}')
+print(f' Всего запросов: {data[\"metrics\"][\"requests_total\"]}')
+print(f' Попаданий в кэш: {data[\"metrics\"][\"cache_hits\"]}')
+print(f' Промахов кэша: {data[\"metrics\"][\"cache_misses\"]}')
+print(f' Эффективность кэша: {data[\"performance\"][\"cache_hit_rate\"]}')
 "
 echo ""
 
