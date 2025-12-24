@@ -104,7 +104,7 @@ try:
     USE_REDIS = True
 except Exception as e:
     logger.error("redis_connection_failed", error=str(e))
-    print("⚠️  Redis не доступен, использую in-memory кэш")
+    print("  Redis не доступен, использую in-memory кэш")
     USE_REDIS = False
     in_memory_cache = {}
 
