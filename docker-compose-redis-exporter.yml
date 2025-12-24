@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  redis-exporter:
+    image: oliver006/redis_exporter:latest
+    container_name: redis-exporter
+    ports:
+      - "9121:9121"
+    environment:
+      - REDIS_ADDR=redis://redis:6379
+      - REDIS_PASSWORD=redispass123
+    networks:
+      - microservices-network
+    restart: unless-stopped
+    depends_on:
+      - redis

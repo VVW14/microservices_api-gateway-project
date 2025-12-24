@@ -1,0 +1,23 @@
+{
+  "dashboard": {
+    "title": "API Gateway Monitoring",
+    "panels": [
+      {
+        "title": "HTTP Requests Rate",
+        "type": "graph",
+        "targets": [{
+          "expr": "rate(http_requests_total[5m])",
+          "legendFormat": "{{method}} {{endpoint}}"
+        }]
+      },
+      {
+        "title": "Cache Hit Rate",
+        "type": "stat",
+        "targets": [{
+          "expr": "sum(rate(cache_hits_total[5m])) / sum(rate(cache_hits_total[5m]) + rate(cache_misses_total[5m])) * 100",
+          "format": "percent"
+        }]
+      }
+    ]
+  }
+}
