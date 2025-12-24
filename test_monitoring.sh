@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo "🧪 Тестирование системы мониторинга"
+echo " Тестирование системы мониторинга"
 echo "=================================="
 echo ""
 
@@ -21,9 +21,9 @@ for component in "${components[@]}"; do
     port=$(echo $component | cut -d: -f2)
     
     if nc -z localhost $port 2>/dev/null; then
-        echo "✅ $name доступен на порту $port"
+        echo " $name доступен на порту $port"
     else
-        echo "❌ $name не доступен на порту $port"
+        echo " $name не доступен на порту $port"
     fi
 done
 
@@ -39,9 +39,9 @@ metrics_endpoints=(
 
 for endpoint in "${metrics_endpoints[@]}"; do
     if curl -s $endpoint | grep -q "TYPE"; then
-        echo "✅ Метрики доступны: $(echo $endpoint | cut -d/ -f3)"
+        echo " Метрики доступны: $(echo $endpoint | cut -d/ -f3)"
     else
-        echo "❌ Метрики не доступны: $(echo $endpoint | cut -d/ -f3)"
+        echo " Метрики не доступны: $(echo $endpoint | cut -d/ -f3)"
     fi
 done
 
@@ -71,9 +71,9 @@ prometheus_queries=(
 for query in "${prometheus_queries[@]}"; do
     result=$(curl -s "http://localhost:9090/api/v1/query?query=$query" | jq '.data.result | length')
     if [[ "$result" -gt 0 ]]; then
-        echo "✅ Prometheus собирает метрику: $query ($result серий)"
+        echo " Prometheus собирает метрику: $query ($result серий)"
     else
-        echo "❌ Prometheus не нашел метрику: $query"
+        echo " Prometheus не нашел метрику: $query"
     fi
 done
 
@@ -82,9 +82,9 @@ echo "5. Проверка Grafana..."
 echo ""
 
 if curl -s "http://admin:admin123@localhost:3000/api/health" | grep -q "database"; then
-    echo "✅ Grafana работает"
+    echo " Grafana работает"
 else
-    echo "❌ Grafana не отвечает"
+    echo " Grafana не отвечает"
 fi
 
 echo ""
@@ -92,7 +92,7 @@ echo "6. Статистика Redis..."
 echo ""
 
 if docker-compose exec redis redis-cli -a redispass123 ping | grep -q "PONG"; then
-    echo "✅ Redis работает"
+    echo " Redis работает"
     
     # Проверяем кэш
     keys=$(docker-compose exec redis redis-cli -a redispass123 keys "profile:*" | wc -l)
@@ -102,14 +102,14 @@ if docker-compose exec redis redis-cli -a redispass123 ping | grep -q "PONG"; th
     memory=$(docker-compose exec redis redis-cli -a redispass123 info memory | grep used_memory_human)
     echo "   Используемая память: $memory"
 else
-    echo "❌ Redis не отвечает"
+    echo " Redis не отвечает"
 fi
 
 echo ""
 echo "=================================="
-echo "✅ Тестирование завершено!"
+echo " Тестирование завершено!"
 echo ""
-echo "📊 Для просмотра метрик откройте:"
+echo " Для просмотра метрик откройте:"
 echo "   - Prometheus: http://localhost:9090"
 echo "   - Grafana:    http://localhost:3000"
 echo "   - Логин в Grafana: admin / admin123"
