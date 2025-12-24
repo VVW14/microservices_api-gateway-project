@@ -1,16 +1,16 @@
 #!/bin/bash
 
-echo "🚀 Запуск API Gateway с мониторингом..."
+echo " Запуск API Gateway с мониторингом..."
 echo ""
 
 # Проверяем Docker
 if ! command -v docker &> /dev/null; then
-    echo "❌ Docker не установлен!"
+    echo " Docker не установлен!"
     exit 1
 fi
 
 if ! command -v docker-compose &> /dev/null; then
-    echo "❌ Docker Compose не установлен!"
+    echo " Docker Compose не установлен!"
     exit 1
 fi
 
@@ -20,14 +20,14 @@ docker-compose down 2>/dev/null || true
 
 # Удаляем volumes (опционально)
 if [[ "$1" == "--clean" ]]; then
-    echo "🧹 Очистка volumes..."
+    echo " Очистка volumes..."
     docker-compose down -v 2>/dev/null || true
 fi
 
 # Проверяем конфигурацию docker-compose
 echo "2. Проверка конфигурации..."
 if ! docker-compose config -q; then
-    echo "❌ Ошибка в docker-compose.yml!"
+    echo " Ошибка в docker-compose.yml!"
     exit 1
 fi
 
@@ -47,16 +47,16 @@ for i in {1..60}; do
         
         # Проверяем Redis
         if docker-compose ps redis | grep -q "Up"; then
-            echo "   ✅ Redis запущен"
+            echo "    Redis запущен"
         else
-            echo "   ❌ Redis не запущен"
+            echo "    Redis не запущен"
         fi
         
         # Проверяем API Gateway
         if docker-compose ps api-gateway | grep -q "Up"; then
-            echo "   ✅ API Gateway запущен"
+            echo "    API Gateway запущен"
         else
-            echo "   ❌ API Gateway не запущен"
+            echo "    API Gateway не запущен"
         fi
     fi
 done
@@ -76,10 +76,10 @@ check_service() {
     local timeout=5
     
     if curl -s --max-time $timeout $url > /dev/null 2>&1; then
-        echo "✅ $name доступен: $url"
+        echo " $name доступен: $url"
         return 0
     else
-        echo "❌ $name не доступен: $url"
+        echo " $name не доступен: $url"
         return 1
     fi
 }
@@ -112,28 +112,28 @@ done
 echo ""
 echo "8. Проверяем метрики API Gateway..."
 if curl -s http://localhost:8000/metrics 2>/dev/null | head -5 | grep -q "TYPE"; then
-    echo "✅ Метрики API Gateway доступны"
+    echo " Метрики API Gateway доступны"
 else
-    echo "❌ Метрики API Gateway не доступны"
+    echo " Метрики API Gateway не доступны"
 fi
 
 echo ""
-echo "📊 МОНИТОРИНГ ЗАПУЩЕН!"
+echo " МОНИТОРИНГ ЗАПУЩЕН!"
 echo ""
-echo "🔗 Ссылки для доступа:"
+echo " Ссылки для доступа:"
 echo "   - API Gateway:      http://localhost:8000"
 echo "   - Prometheus:       http://localhost:9090"
 echo "   - Grafana:          http://localhost:3000 (логин: admin, пароль: admin123)"
 echo "   - Redis метрики:    http://localhost:9121/metrics"
 echo "   - Node метрики:     http://localhost:9100/metrics"
 echo ""
-echo "📈 Дашборды Grafana:"
+echo " Дашборды Grafana:"
 echo "   - Перейдите в Grafana -> Dashboards -> Browse"
 echo "   - Или импортируйте дашборд с ID: 1860 (Node Exporter Full)"
 echo ""
-echo "🛑 Для остановки выполните: docker-compose down"
+echo " Для остановки выполните: docker-compose down"
 echo ""
-echo "📋 Для просмотра логов:"
+echo " Для просмотра логов:"
 echo "   docker-compose logs -f api-gateway"
 echo "   docker-compose logs -f prometheus"
 echo "   docker-compose logs -f grafana"
